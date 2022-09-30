@@ -1,0 +1,39 @@
+veterinaire(#id : int, nom : str, prenom : str) avec nom, prenom NOT NULL
+
+employe(#id : int, nom : str, prenom : str) avec nom, prenom NOT NULL
+
+client(#tel : str, nom : str, prenom : str) avec nom, prenom NOT NULL
+
+race(#nom : str, nomEspece=>Espece.nom) avec espece NOT NULL
+espece(#nom : str)
+
+animal(#id : int, nomRace=>Race.nom, nomEspece=>Espece.nom, proprio=>Client.tel, poids : int, nom : str, genre : Genre, naissance : Date, taille : int) 
+    avec race, espece, proprio, nom, genre, naissance NOT NULL
+
+prestation(#id : int, #idFacture=>Facture.id, type : typePrestation) 
+    avec type NOT NULL
+
+rendez-vous(#dateRdv : Date, idVeto=>Veterinaire.id, idAnimal=>Animal.id, idPrestation=>Prestation.id, idFacture=>Prestation.idFacture)
+    avec idPrestation KEY, idVeto et idAnimal NOT NULL
+    
+produit(#num : int, nom : str, dateFabric : Date, type : {medicament, produitEntretien}) 
+    avec type, dateFabric NOT NULL
+    
+facture(#id : int, vendeur=>Employe.id, numProduit=>Produit, montant : int, datePaiement : Date, reglement : str) 
+    avec vendeur NOT NULL
+
+
+Facture :
+Heritage par classe mere pour produit car heritage complet et classe mere liee a facture
+
+
+Personne :
+Heritage par classe fille car classe mere abstract et classes filles toutes liees a d'autres classes
+
+
+Contraintes :
+INTERSECTION( PROJECTION(Veterinaire, nom, prenom), PROJECTION(Employe, nom, prenom)) = {}
+INTERSECTION( PROJECTION(Veterinaire, nom, prenom), PROJECTION(Client, nom, prenom)) = {}
+INTERSECTION( PROJECTION(Employe, nom, prenom), PROJECTION(Client, nom, prenom)) = {}
+
+PROJECTION(Espece, nom) = PROJECTION(Race, nomEspece)
